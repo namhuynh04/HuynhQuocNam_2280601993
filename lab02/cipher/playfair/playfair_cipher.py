@@ -6,20 +6,24 @@ class PlayFairCipher:
         pass
 
     def create_playfair_matrix(self, key):
-        key = key.replace("J", "I")
-        key = key.upper()
-        key_set = set(key)
-        alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
-        ramaining_letters = [
-            letter for letter in alphabet if letter not in key_set]
-        matrix = list(key)
+        key = key.replace("J", "I").upper()
+        seen = set()
+        matrix = []
+        # Chỉ thêm ký tự mới vào ma trận
+        for ch in key:
+            if ch not in seen and ch.isalpha():
+                seen.add(ch)
+                matrix.append(ch)
 
-        for letter in ramaining_letters:
-            matrix.append(letter)
-            if len(matrix)  == 25:
-                break
-        playfair_matrix = [matrix[i:i+5] for i in range(0, len(matrix), 5)]
-        return playfair_matrix
+        alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+        for ch in alphabet:
+            if ch not in seen:
+                matrix.append(ch)
+                if len(matrix) == 25:
+                    break
+
+        # Chia thành 5×5
+        return [matrix[i:i+5] for i in range(0,25,5)]
     
     def find_letter_coords(self, matrix, letter):
         for row in range(len(matrix)):
