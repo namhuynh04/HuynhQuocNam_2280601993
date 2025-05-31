@@ -1,3 +1,5 @@
+import sys
+print("Python is running from:", sys.executable)
 from flask import Flask, render_template, request, json
 from cipher.caesar import CaesarCipher
 from cipher.vigenere import VigenereCipher
@@ -113,20 +115,18 @@ def playfair_encrypt():
     text = request.form['inputPlainText']
     key = request.form['inputKeyPlain']
     PlayFair = PlayFairCipher()
-    encrypted_text = PlayFair.playfair_encrypt(text, key)
+    matrix = PlayFair.create_playfair_matrix(key) 
+    encrypted_text = PlayFair.playfair_encrypt(text, matrix)
     return render_template("playfair.html", outputCipherText = encrypted_text , inputPlainText = text, inputKeyPlain = key)
 
-@app.route("/transposition/decrypt", methods =['POST'])
-def transposition_decrypt():
+@app.route("/playfair/decrypt", methods =['POST'])
+def playfair_decrypt():
     text = request.form['inputCipherText']
-    key = int(request.form['inputKeyCipher'])
-    Transposition = TranspositionCipher()
-    decrypted_text = Transposition.decrypt(text, key)
-    return render_template("transposition.html", outputPlainText = decrypted_text , inputCipherText = text, inputKeyCipher = key)
-
-
-
-
+    key = request.form['inputKeyCipher']
+    PlayFair = PlayFairCipher()
+    matrix = PlayFair.create_playfair_matrix(key) 
+    decrypted_text = PlayFair.playfair_decrypt(text, matrix)
+    return render_template("playfair.html", outputPlainText = decrypted_text , inputCipherText = text, inputKeyCipher = key)
 
 
 if __name__ == "__main__":
