@@ -31,50 +31,24 @@ class PlayFairCipher:
                 if matrix[row][col] == letter:
                     return row, col
     
-    def prepare_plaintext(self, text):
-        text = text.upper().replace("J", "I")
-        result = ""
-        i = 0
-        while i < len(text):
-            a = text[i]
-            b = ""
-            if i + 1 < len(text):
-                b = text[i + 1]
-            else:
-                b = "X"
-
-            if a == b:
-                result += a + "X"
-                i += 1
-            else:
-                result += a + b
-                i += 2
-
-        if len(result) % 2 != 0:
-            result += "X"
-        return result
-
     def playfair_encrypt(self, plain_text, matrix):
-        plain_text = self.prepare_plaintext(plain_text)
+        plain_text = plain_text.replace("J", "I")
+        plain_text = plain_text.upper()
         encrypted_text = ""
 
         for i in range(0, len(plain_text), 2):
             pair = plain_text[i:i+2]
-            coords1 = self.find_letter_coords(matrix, pair[0])
-            coords2 = self.find_letter_coords(matrix, pair[1])
-            if coords1 is None or coords2 is None:
-                raise ValueError(f"Không tìm thấy một trong hai ký tự '{pair[0]}' hoặc '{pair[1]}' trong matrix")
-            row1, col1 = coords1
-            row2, col2 = coords2
+            if len(pair) == 1:
+                pair += "X"
+            row1, col1 = self.find_letter_coords(matrix, pair[0])
+            row2, col2 = self.find_letter_coords(matrix, pair[1])
+
             if row1 == row2:
-                encrypted_text += matrix[row1][(col1 + 1) % 5]
-                encrypted_text += matrix[row2][(col2 + 1) % 5]
+                encrypted_text += matrix[row1][(col1 + 1) % 5] + matrix[row2][(col2 + 1) % 5]
             elif col1 == col2:
-                encrypted_text += matrix[(row1 + 1) % 5][col1]
-                encrypted_text += matrix[(row2 + 1) % 5][col2]
+                encrypted_text += matrix[(row1 + 1) % 5][col1] + matrix[(row2 + 1) % 5][col2]
             else:
-                encrypted_text += matrix[row1][col2]
-                encrypted_text += matrix[row2][col1]
+                encrypted_text += matrix[row1][col2] + matrix[row2][col1]
         return encrypted_text
     
     def playfair_decrypt(self, cipher_text, matrix):
