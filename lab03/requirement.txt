@@ -1,5 +1,3 @@
-PyQt5
-request
 
-Flask >= 2.3.2
-rsa >=4.9
+
+ecdsa
