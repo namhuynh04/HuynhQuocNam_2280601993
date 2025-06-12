@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from cipher.rsa import RSACipher
-
+from cipher.ecc import 
 app = Flask(__name__)
 
 #RSA
